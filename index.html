@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<style>
+html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+.w3-sidebar {
+  z-index: 3;
+  width: 250px;
+  top: 43px;
+  bottom: 0;
+  height: inherit;
+}
+</style>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+    <a href="#" class="w3-bar-item w3-button w3-theme-l1">Logo</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">About</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Values</a>
+
+  </div>
+</div>
+
+<!-- Sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+  <h4 class="w3-bar-item"><b>Menu</b></h4>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
+  
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div class="w3-main" style="margin-left:250px">
+
+  <div class="w3-row w3-padding-64">
+
+    <div class="w3-twothird w3-container">
+      <h1 class="w3-text-teal">Heading</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
+    </div>
+    <div class="w3-third w3-container">
+      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
+      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
+    </div>
+  </div>
+  <template id="weather_cities" >
+
+  	<div class="block"> 
+  		
+
+                <div class="row" v-for="city in cities">
+                    
+
+                <div class="block-title">
+                     <h2>Type: <em>{{city.id}}</em></h2>
+                </div>
+
+                <div class="row">
+                    <div class="hidden-sm hidden-xs col-md-4 col-lg-4">  
+                        <h2 class="sub-header">{{city.title}}</h2>
+                    </div>
+                </div>
+            </div>
+        <router-link to="`${{city.title}}`">View details</router-link>
+
+        </div>
+</template >
+
+<template id="detals" >
+
+  	<div class="block"> 
+  		
+
+                    
+
+                <div class="block-title">
+                     <h2>Type: <em>{{detals.id}}</em></h2>
+                </div>
+
+                <div class="row">
+                    <div class="hidden-sm hidden-xs col-md-4 col-lg-4">  
+                        <h2 class="sub-header">{{detals.title}}</h2>
+                    </div>
+                </div>
+            </div>
+</template >
+<div id="app">
+	<router-link to="/foo">Go to Foo</router-link>
+    <router-link to="/bar">Go to Bar</router-link>
+	<router-view></router-view>
+
+</div>
+
+
+<!-- END MAIN -->
+</div>
+
+<script>
+const Foo = { template: '<div>foo</div>' }
+const Bar = { template: '<div>bar</div>' }
+///////////////////////Component weather////////////////////////////////////////////
+var myTask = Vue.component('apppage', {
+template: '#weather_cities',
+data: function() {
+    return{
+        cities: []
+        //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+
+    }
+  },
+
+mounted: function () {
+	console.log("entraaaaaaaaaaaaa")
+	this.fetchCampaigns();
+},
+
+methods: {
+    fetchCampaigns: function () {
+
+    axios.get("weather.php?command=search&keyword=Dublin")
+    .then((response => {
+    	this.cities =  response.data
+ 
+
+    }))
+
+    },
+}
+})
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////component details//////////////////////////////////////
+var details = Vue.component('detals', {
+template: '#detals',
+data: function() {
+    return{
+        detals: {id:2, title: "lkddd"}
+        //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+
+    }
+  },
+
+mounted: function () {
+	console.log("dddddddddddddd")
+	//this.fetchCampaigns();
+},
+
+methods: {
+    fetchCampaigns: function () {
+
+    axios.get("weather.php?command=search&keyword=Dublin")
+    .then((response => {
+    	this.campaigns =  response.data
+ 
+
+    }))
+
+    },
+}
+})
+
+///////////////////////////////////////////////////
+const router = new VueRouter({
+ // mode: 'history',
+  routes: [
+    { path: '/', component: myTask },
+    { path: '/detals/:title', component: details },
+    { path: '/foo', component: Foo }
+  ]
+})
+
+var vm = new Vue({
+  // options
+  router,
+  el: '#app',
+
+})
+
+</script>
+
+</body>
+</html>
