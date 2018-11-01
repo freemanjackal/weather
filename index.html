@@ -66,10 +66,10 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   </div>
   <template id="weather_cities" >
 
-  	<div class="block"> 
+  	<div class="block" > 
   		
 
-                <div class="row" v-for="city in cities">
+                <div class="row" :cities-weather='cities' v-for="city in cities">
                     
 
                 <div class="block-title">
@@ -81,19 +81,16 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
                         <h2 class="sub-header">{{city.title}}</h2>
                     </div>
                 </div>
+        <router-link v-bind:to="'detals/'+city.title">View details</router-link>
+
             </div>
-        <router-link to="`${{city.title}}`">View details</router-link>
 
         </div>
 </template >
-
+<!--template details of selected city ////////////////////////////////////////////////-->
 <template id="detals" >
 
   	<div class="block"> 
-  		
-
-                    
-
                 <div class="block-title">
                      <h2>Type: <em>{{detals.id}}</em></h2>
                 </div>
@@ -105,9 +102,26 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
                 </div>
             </div>
 </template >
+<!--end template details of selected city /////////////////////////////////-->
+
+<!--template search of  city /////////////////////////////////-->
+<!--template id="search" >
+    <div class="search-wrapper">
+    <input type="text" v-model="search" placeholder="Search title.."/>
+        <label>Search by city name:</label>
+        <button>Search for cities</button>
+  </div>
+    
+</template-- >
+<!--end template search  city /////////////////////////////////-->
+
 <div id="app">
-	<router-link to="/foo">Go to Foo</router-link>
-    <router-link to="/bar">Go to Bar</router-link>
+<!--div class="search-wrapper">
+    <input type="text" v-model="search" placeholder="Search title.."/>
+        <label>Search by city name:</label>
+        <button>Search for cities</button>
+  </div-->
+	<router-link :to="{/, cities}">search</router-link>
 	<router-view></router-view>
 
 </div>
@@ -117,24 +131,25 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 </div>
 
 <script>
-const Foo = { template: '<div>foo</div>' }
-const Bar = { template: '<div>bar</div>' }
 ///////////////////////Component weather////////////////////////////////////////////
 var myTask = Vue.component('apppage', {
 template: '#weather_cities',
-data: function() {
+props: ['cities'],
+/*data: function() {
     return{
         cities: []
         //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
 
     }
   },
-
+*/
 mounted: function () {
 	console.log("entraaaaaaaaaaaaa")
-	this.fetchCampaigns();
-},
+  console.log(this.cities)
 
+	//this.fetchCampaigns();
+},
+/*
 methods: {
     fetchCampaigns: function () {
 
@@ -146,9 +161,40 @@ methods: {
     }))
 
     },
-}
+}*/
+
 })
 /////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////Component search////////////////////////////////////////////
+var search = Vue.component('search_city', {
+template: '#search',
+data: function() {
+    return{
+        search: []
+        //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+
+    }
+  },
+
+mounted: function () {
+  console.log("entraaaaaaaaaaaaa")
+  //this.fetchCampaigns();
+},
+
+methods: {
+    fetchCampaigns: function () {
+
+    axios.get("weather.php?command=search&keyword=Dublin")
+    .then((response => {
+      this.cities =  response.data
+ 
+
+    }))
+
+    },
+}
+})
+/////////////////////////////////end component//////////////////////////////////////
 /////////////////////////////////////////component details//////////////////////////////////////
 var details = Vue.component('detals', {
 template: '#detals',
@@ -161,7 +207,8 @@ data: function() {
   },
 
 mounted: function () {
-	console.log("dddddddddddddd")
+	//console.log("dddddddddddddd")
+
 	//this.fetchCampaigns();
 },
 
@@ -183,9 +230,9 @@ methods: {
 const router = new VueRouter({
  // mode: 'history',
   routes: [
-    { path: '/', component: myTask },
+    { path: '/', component: myTask, props: this.cities },
     { path: '/detals/:title', component: details },
-    { path: '/foo', component: Foo }
+    { path: '/search' , component: search }
   ]
 })
 
@@ -193,6 +240,28 @@ var vm = new Vue({
   // options
   router,
   el: '#app',
+  data: function() {
+    return{
+        cities: []
+        //cities: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+
+    }
+  },
+
+mounted: function () {
+  console.log("dddddddddddddd")
+  this.fetchWeather();
+},
+methods: {
+    fetchWeather: function () {
+
+    axios.get("weather.php?command=search&keyword=Dublin")
+    .then((response => {
+      this.cities =  response.data
+    }))
+
+    },
+}
 
 })
 
