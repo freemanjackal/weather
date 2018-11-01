@@ -3,263 +3,224 @@
 <title>W3.CSS Template</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
 <style>
 html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
-.w3-sidebar {
-  z-index: 3;
-  width: 250px;
-  top: 43px;
-  bottom: 0;
-  height: inherit;
-}
+
 </style>
 <body>
 
-<!-- Navbar -->
-<div class="w3-top">
-  <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
-    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-theme-l1">Logo</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">About</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Values</a>
+<div class="container-fluid" style="margin-top:250px">
 
-  </div>
-</div>
-
-<!-- Sidebar -->
-<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
-  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
-    <i class="fa fa-remove"></i>
-  </a>
-  <h4 class="w3-bar-item"><b>Menu</b></h4>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  
-</nav>
-
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
-<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
-<div class="w3-main" style="margin-left:250px">
-
-  <div class="w3-row w3-padding-64">
-
-    <div class="w3-twothird w3-container">
-      <h1 class="w3-text-teal">Heading</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-    </div>
-    <div class="w3-third w3-container">
-      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
-      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
-    </div>
-  </div>
   <template id="weather_cities" >
 
-  	<div class="block" > 
-  		
-
-                <div class="row" :cities-weather='cities' v-for="city in cities">
-                    
-
-                <div class="block-title">
-                     <h2>Type: <em>{{city.id}}</em></h2>
+        <div class="row col-md-8"> 
+                <div class="card col-md-5 col-lg-5" v-if="cities.length > 0" style="width: 18rem; top: 5rem;" :cities-weather='cities' v-for="city in cities">
+                  <div class="card-body">
+                    <h5 class="card-title">{{city.title}}</h5>
+                    <span class="card-text">Location: {{city.latt_long}}</span><br>
+                    <router-link v-bind:to="'/detals/'+city.woeid" class="btn btn-primary">View details</router-link>
+                  </div>
+                  <br>
                 </div>
-
-                <div class="row">
-                    <div class="hidden-sm hidden-xs col-md-4 col-lg-4">  
-                        <h2 class="sub-header">{{city.title}}</h2>
-                    </div>
-                </div>
-        <router-link v-bind:to="'detals/'+city.title">View details</router-link>
-
-            </div>
-
-        </div>
+                <div v-show="cities.length === 0" :message='message'> {{message}}</div>
+                
+      </div>
 </template >
 <!--template details of selected city ////////////////////////////////////////////////-->
 <template id="detals" >
 
-  	<div class="block"> 
-                <div class="block-title">
-                     <h2>Type: <em>{{detals.id}}</em></h2>
+  	<div class="row col-md-8"> 
+                <div class="col-md-12 col-lg-12">
+                     <h2>City: <em>{{detals.title}}</em></h2>
                 </div>
 
-                <div class="row">
-                    <div class="hidden-sm hidden-xs col-md-4 col-lg-4">  
-                        <h2 class="sub-header">{{detals.title}}</h2>
-                    </div>
+                <div class="card col-md-4 col-lg-4" style="width: 18rem; top: 5rem;" v-for="day in detals.consolidated_weather">
+                  <img class="card-img-top" v-bind:src="image(day.weather_state_name)" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">{{weekDay(day.applicable_date)}}</h5>
+                    <span class="card-text">State: {{day.weather_state_name}}</span><br>
+                    <span class="card-text">Temp.: {{day.the_temp}}</span><br>
+                    <span class="card-text">State: {{day.weather_state_name}}</span><br>
+                    <span class="card-text">Max temp.: {{day.max_temp}}</span>
+                  </div>
                 </div>
-            </div>
+                <br>
+      </div>
 </template >
 <!--end template details of selected city /////////////////////////////////-->
 
-<!--template search of  city /////////////////////////////////-->
-<!--template id="search" >
-    <div class="search-wrapper">
-    <input type="text" v-model="search" placeholder="Search title.."/>
-        <label>Search by city name:</label>
-        <button>Search for cities</button>
-  </div>
-    
-</template-- >
-<!--end template search  city /////////////////////////////////-->
 
 <div id="app">
-<!--div class="search-wrapper">
-    <input type="text" v-model="search" placeholder="Search title.."/>
-        <label>Search by city name:</label>
-        <button>Search for cities</button>
-  </div-->
-	<router-link :to="{/, cities}">search</router-link>
-	<router-view></router-view>
+  <a href='#' v-on:click="fetchWeather('')" class="offset-md-1">HOME</a>
 
+ <div class="col-md-12 col-lg-12" >
+
+  <div  class="col-md-12 col-lg-12">
+    <input type="text" v-model="search" v-on:keyup.enter="fetchWeather" placeholder="Search title.."/>
+        <button  v-on:click="fetchWeather(search)">Search</button>
+  </div>
+	<!--router-link :to="{/}">search</router-link-->
+	<router-view :cities="cities" :message="message"></router-view>
+
+ </div>
 </div>
 
 
 <!-- END MAIN -->
-</div>
 
 <script>
 ///////////////////////Component weather////////////////////////////////////////////
 var myTask = Vue.component('apppage', {
 template: '#weather_cities',
-props: ['cities'],
-/*data: function() {
-    return{
-        cities: []
-        //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+props: ['cities','message'],
 
-    }
-  },
-*/
 mounted: function () {
-	console.log("entraaaaaaaaaaaaa")
-  console.log(this.cities)
 
-	//this.fetchCampaigns();
 },
-/*
-methods: {
-    fetchCampaigns: function () {
 
-    axios.get("weather.php?command=search&keyword=Dublin")
-    .then((response => {
-    	this.cities =  response.data
- 
-
-    }))
-
-    },
-}*/
 
 })
 /////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////Component search////////////////////////////////////////////
-var search = Vue.component('search_city', {
+/*var search = Vue.component('search_city', {
 template: '#search',
 data: function() {
     return{
         search: []
-        //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
 
     }
   },
 
 mounted: function () {
-  console.log("entraaaaaaaaaaaaa")
-  //this.fetchCampaigns();
+  console.log("search")
 },
 
 methods: {
-    fetchCampaigns: function () {
 
-    axios.get("weather.php?command=search&keyword=Dublin")
-    .then((response => {
-      this.cities =  response.data
- 
-
-    }))
-
-    },
 }
-})
+})*/
 /////////////////////////////////end component//////////////////////////////////////
-/////////////////////////////////////////component details//////////////////////////////////////
+/////////////////////////////////////////component weather details//////////////////////////////////////
 var details = Vue.component('detals', {
 template: '#detals',
 data: function() {
     return{
-        detals: {id:2, title: "lkddd"}
-        //campaigns: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+        detals: {}
 
     }
   },
 
 mounted: function () {
-	//console.log("dddddddddddddd")
 
-	//this.fetchCampaigns();
+	this.fetchWeatherDetails(this.$route.params.woeid);
 },
 
 methods: {
-    fetchCampaigns: function () {
+    fetchWeatherDetails: function (city) {
 
-    axios.get("weather.php?command=search&keyword=Dublin")
+    axios.get("weather.php?command=location&woeid="+city)
     .then((response => {
-    	this.campaigns =  response.data
+    	this.detals =  response.data
  
 
     }))
 
     },
+    weekDay: function(applicable_date){
+        var dayOfWeek = new Date(applicable_date).getDay();    
+        return isNaN(dayOfWeek) ? null : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+    },
+    image: function(state){
+        var address = "https://www.metaweather.com/static/img/weather/"
+        switch (state)
+          {
+             case "Snow": return address+"sn.svg"
+             case "Sleet": return address+"sl.svg"
+             case "Hail": return address+"h.svg"
+             case "Thunderstorm": return address+"t.svg"
+             case "Heavy Rain": return address+"hr.svg"
+             case "Light Rain": return address+"lr.svg"
+             case "Showers": return address+"s.svg"
+             case "Heavy Cloud": return address+"hc.svg"
+             case "Light Cloud": return address+"lc.svg"
+
+
+             default: 
+                 return address+"c.svg"
+          }
+    }
 }
 })
 
-///////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 const router = new VueRouter({
- // mode: 'history',
   routes: [
-    { path: '/', component: myTask, props: this.cities },
-    { path: '/detals/:title', component: details },
-    { path: '/search' , component: search }
+    { path: '/', component: myTask},
+    { path: '/detals/:woeid', component: details },
+    { path: '/search/:keyword' , component: myTask }
   ]
 })
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
 var vm = new Vue({
   // options
   router,
   el: '#app',
   data: function() {
     return{
-        cities: []
-        //cities: [{id:1, title: "lolo"},{id:2, title: "lkddd"}]
+        //cities: []
+        cities: [],
+        search: "",
+        message: "Searching..."
 
     }
   },
 
 mounted: function () {
-  console.log("dddddddddddddd")
-  this.fetchWeather();
+  this.fetchWeather("");
 },
 methods: {
-    fetchWeather: function () {
+    fetchWeather: function (city) {
+    this.message = "Searching..."
 
-    axios.get("weather.php?command=search&keyword=Dublin")
-    .then((response => {
-      this.cities =  response.data
-    }))
+    if(city != "")
+      
+        axios.get("weather.php?command=search&keyword="+city)
+        .then((response => {
+          this.cities =  response.data
+          router.push({ path: '/search/'+city} )
+          
+        }))
+    else{
+      this.cities = []
+      var capitals = ["Istanbul", "Berlin", "London", "Helsinki", "Dublin", "Vancouver"]
+      axios.get("weather.php?command=search&keyword="+capitals[0])
+        .then((response => {
+          this.cities.push(response.data[0])
+          this.search = ""
+          router.push({ path: '/'} )
+        }))
+      console.log("for " + capitals.length)
+      for(var i=1; i<capitals.length;i++){
+         axios.get("weather.php?command=search&keyword="+capitals[i])
+        .then((response => {
+          this.cities.push(response.data[0])
+          this.search = ""
+          router.push({ path: '/'} )
 
+        }))
+      }
+    }
+      if(this.cities.length === 0)
+            this.message = "Nothing was found. Try with other keywords..."
     },
 }
 
