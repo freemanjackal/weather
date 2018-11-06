@@ -2,8 +2,8 @@
 --
 
 It were developed basically 2 components.
-1* Component for showing the initial 6 cities
-2* Component for showing the details of the weather of a city
+1. Component for showing the initial 6 cities
+2. Component for showing the details of the weather of a city
 
 The first component it is also reused for showing the cities in the search result.
 Those components basically just show information. The search it is done in the root/parent component that pass the information to child components through properties.
